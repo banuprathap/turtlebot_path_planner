@@ -1,6 +1,6 @@
 Turtlebot Navigation Tutorial
 ================================
-	This is a simple navigation demo for a Turtlebot
+This is a simple navigation demo for a Turtlebot
 
 [![Build Status](https://travis-ci.org/banuprathap/turtlebot_nav_tutorial.svg?branch=master)](https://travis-ci.org/banuprathap/turtlebot_nav_tutorial)
 
