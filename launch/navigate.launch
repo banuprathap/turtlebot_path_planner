@@ -1,0 +1,5 @@
+<launch>
+      <include file="$(find turtlebot_nav_tutorial)/launch/turtlebot_stage_navigation.launch"/>
+     <node name="map_navigation" pkg="turtlebot_nav_tutorial" type="map_navigation_node" output="screen">
+     </node>
+</launch>
