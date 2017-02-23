@@ -45,16 +45,18 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>move_base_msgs</build_depend>
+  <build_depend>nav_core</build_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>move_base_msgs</run_depend>
+  <run_depend>nav_core</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
-
+      <nav_core plugin="${prefix}/relaxed_astar_planner_plugin.xml"/>
   </export>
 </package>

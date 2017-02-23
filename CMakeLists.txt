@@ -5,6 +5,7 @@ project(turtlebot_nav_tutorial)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  nav_core
   roscpp
   rospy
   std_msgs
@@ -103,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES turtlebot_nav_tutorial
-#  CATKIN_DEPENDS roscpp rospy std_msgs tf
+  CATKIN_DEPENDS roscpp rospy std_msgs tf nav_core
 #  DEPENDS system_lib
 )
 
@@ -122,6 +123,8 @@ include_directories(
 # add_library(turtlebot_nav_tutorial
 #   src/${PROJECT_NAME}/turtlebot_nav_tutorial.cpp
 # )
+
+add_library(relaxed_astar_lib src/RAstar_ros.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

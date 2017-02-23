@@ -1,16 +1,27 @@
 <launch>
+  <include file="$(find turtlebot_navigation)/launch/includes/velocity_smoother.launch.xml"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/safety_controller.launch.xml"/>
+  
+  <arg name="odom_frame_id"   default="odom"/>
+  <arg name="base_frame_id"   default="base_footprint"/>
+  <arg name="global_frame_id" default="map"/>
+  <arg name="odom_topic" default="odom" />
+  <arg name="laser_topic" default="scan" />
+
   <arg name="base"       default="$(optenv TURTLEBOT_BASE kobuki)"/>  <!-- create, rhoomba -->
   <arg name="stacks"     default="$(optenv TURTLEBOT_STACKS hexagons)"/>  <!-- circles, hexagons -->
   <arg name="3d_sensor"  default="$(optenv TURTLEBOT_3D_SENSOR kinect)"/>  <!-- kinect, asus_xtion_pro -->
 
-  <!-- Name of the map to use (without path nor extension) and initial position -->
+  <!-- Name of the map to use and initial position -->
   <arg name="map_file"       default=" $(find turtlebot_nav_tutorial)/maps/psu.yaml"/> <!-- psu -->
   <arg name="world_file"     default=" $(find turtlebot_nav_tutorial)/maps/stage/psu.world"/>
   <arg name="initial_pose_x" default="20.925"/> <!-- Edit this value to load the turtlebot at a different location -->
   <arg name="initial_pose_y" default="11.925"/> <!-- Edit this value to load the turtlebot at a different location -->
   <arg name="initial_pose_a" default="0.0"/>    <!-- Edit this value to load the turtlebot at a different orientation -->
+  <arg name="custom_param_file" default="$(find turtlebot_navigation)/param/dummy.yaml"/>
 
   <param name="/use_sim_time" value="true"/>
+  
   <!--  ******************** Stage ********************  -->
   <node pkg="stage_ros" type="stageros" name="stageros" args="$(arg world_file)">
     <param name="base_watchdog_timeout" value="0.5"/>
@@ -38,7 +49,34 @@
   </node>
 
   <!--  ************** Navigation  ***************  -->
-  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/>
+  
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    
+      <param name="base_global_planner" value="RAstar_planner/RAstarPlannerROS"/> 
+    
+    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />   
+    <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />   
+    <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/global_planner_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/navfn_global_planner_params.yaml" command="load" />
+    <!-- external params file that could be loaded into the move_base namespace -->
+    <rosparam file="$(arg custom_param_file)" command="load" />
+    
+    <!-- reset frame_id parameters using user input data -->
+    <param name="global_costmap/global_frame" value="$(arg global_frame_id)"/>
+    <param name="global_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+    <param name="local_costmap/global_frame" value="$(arg odom_frame_id)"/>
+    <param name="local_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+    <param name="DWAPlannerROS/global_frame_id" value="$(arg odom_frame_id)"/>
+
+    <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <remap from="scan" to="$(arg laser_topic)"/>
+  </node>
+
 
   <!--  ****** Maps *****  -->
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)">
