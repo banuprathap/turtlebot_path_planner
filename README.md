@@ -8,10 +8,6 @@ Turtlebot Navigation Tutorial
 
 This is a simple navigation demo for a Turtlebot
 
- AUTHOR : BANUPRATHAP ANANDAN
- AFFILIATION : UNIVERSITY OF MARYLAND, MARYLAND ROBOTICS CENTER
- EMAIL : BPRATHAP@UMD.EDU
-
 License
 ============
 Copyright belongs to the author of this repository
